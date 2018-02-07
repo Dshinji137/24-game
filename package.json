@@ -1,0 +1,22 @@
+{
+  "name": "24_game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "mocha server/**/*.test.js",
+    "test-watch": "nodemon --exec 'npm test'"
+  },
+  "engines": {
+    "node": "6.2.2"
+  },
+  "author": "Dshinji",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "http": "0.0.0",
+    "path": "^0.12.7",
+    "socket.io": "^2.0.4"
+  }
+}
