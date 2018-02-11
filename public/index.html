@@ -5,29 +5,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>24 Game</title>
-  <!--<link rel='stylesheet' href='./css/style.css'>-->
+  <link rel='stylesheet' href='./css/game.css'>
 </head>
 
-<body class=''>
-  <div class=''>
-    <form id="user-login">
-      <div class=''>
-        <h3>Join a Game</h3>
+<body class='container'>
+  <div class='center-form'>
+    <form id='create-room'>
+      <div class='menu-row'>
+        <h3>24 Game</h3>
       </div>
-      <div class=''>
+      <div class='menu-row'>
         <label>User Name</label>
         <input id="user-name" type="text" name="name" autofocus/>
       </div>
-      <div class=''>
+      <div class='menu-row'>
         <label>Room Name</label>
         <input id="user-room" type="text" name="room"/>
       </div>
-      <div class=''>
-        <button>Join</button>
+      <div class='menu-row'>
+        <button>Create a Room</button>
+      </div>
+    </form>
+
+    <form id='join-room'>
+      <div class='menu-row'>
+        <select id='available-room'></select>
+      </div>
+      <div class='menu-row'>
+        <button id='join-button'>Join Room</button>
       </div>
     </form>
   </div>
-  
+
   <script src='/socket.io/socket.io.js'></script>
   <script src='/js/index.js'></script>
 </body>

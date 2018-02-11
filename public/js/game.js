@@ -23,8 +23,6 @@ socket.on('connect', function() {
       document.getElementById('ready-button').disabled = true;
       document.getElementById('send-button').disabled = true;
       document.getElementById('leave-button').style.display = 'block';
-    } else {
-      //console.log('no error');
     }
   })
 });
@@ -56,6 +54,7 @@ socket.on('newQuestion',function(nums) {
   var params = getParams(window.location.search);
   var seconds = 20;
   document.getElementById('send-button').disabled = false;
+  document.getElementById('send-button').style.opcatiy = 1;
 
   var timer = setInterval(function() {
     document.getElementById('timer').innerHTML = seconds;
@@ -64,6 +63,7 @@ socket.on('newQuestion',function(nums) {
     if(document.getElementById("judge-answer").innerHTML === "Congratulations! You are right") {
       clearInterval(timer);
       document.getElementById('send-button').disabled = true;
+      document.getElementById('send-button').style.opacity = 0.5;
       socket.emit('newRound',params,function() {});
     }
     if(seconds < 0) {
@@ -81,14 +81,13 @@ socket.on("roundFinish",(infos) => {
     ol.append(jQuery('<li></li>').text(user.name + " " + user.point+"pts"));
   });
   document.getElementById("send-button").disabled = true;
-  jQuery('#modal-content').html(ol);
+  document.getElementById("send-button").style.opacity = 0.5;
+  jQuery('#user-rank').html(ol);
   document.getElementById('rank-modal').style.display = 'block';
-  document.getElementById('leave-button').style.display = 'block';
-})
+});
 
-var form = document.getElementById('expression-form');
-form.addEventListener("submit",function(e) {
-  e.preventDefault();
+var send = document.getElementById('send-button');
+send.onclick = function() {
   var ele = document.getElementById('expression-input');
   //console.log(ele.value);
   var params = getParams(window.location.search);
@@ -100,13 +99,14 @@ form.addEventListener("submit",function(e) {
     // empty string
     ele.value = '';
   });
-});
+}
 
 var ready = document.getElementById('ready-button');
 ready.onclick = function() {
   var params = getParams(window.location.search);
   socket.emit('ready',params, function() {
     ready.disabled = true;
+    ready.style.opacity = 0.5;
   });
 };
 

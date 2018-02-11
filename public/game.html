@@ -7,28 +7,37 @@
 </head>
 
 <body>
-  <div id="users" style="width:20%;display:inline-block;"></div>
-
-  <div style="width:80%;display:inline-block">
-    <div class="" id="question-area"></div>
-    <div class="" id="timer"></div>
-    <div class="" id="judge-answer"></div>
-
-    <div>
-      <form id="expression-form">
-        <input id="expression-input" type='text' name='expression', autofocus autocomplete='off'/>
-        <button id="send-button">Send</button>
-      </form>
-    </div>
-
-    <div>
-      <button id="ready-button" class="">Ready</button>
-    </div>
+  <div class='user-information'>
+    <h3>People</h3>
+    <div class='users-list' id='users'></div>
   </div>
 
-  <div id='rank-modal' class="modal">
-    <div id="modal-content" class="modal-content"></div>
-    <button id="leave-button" class="leave">Leave</button>
+  <div class='game-main'>
+    <div class="number-panel">
+      <div class="number" id="question-area"></div>
+    </div>
+    <div class="timer" id="timer"></div>
+    <div class="feedback" id="judge-answer"></div>
+
+    <div class="operation">
+      <div class="input-container">
+        <input class='answer-input' id="expression-input" type='text' name='expression', autofocus autocomplete='off'/>
+      </div>
+      <div class="operation-button-container">
+        <div style="margin-top:10px;"></div>
+        <button id="send-button">Submit</button>
+        <button id="ready-button" class="">Ready</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id='rank-modal' class="rank-modal-container">
+    <div class="rank-modal">
+      <div class='modal-title'>User Scores</div>
+      <div id="user-rank" class="user-rank"></div>
+      <button id="leave-button" class="leave">Leave</button>
+    </div>
   </div>
 
   <script src='/socket.io/socket.io.js'></script>

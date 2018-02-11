@@ -13,38 +13,39 @@ var io = socketIO(server);
 var users = new Users();
 
 app.use(express.static(publicPath));
-/*
-var count = 0;
-var numbersList = [];
-var currentNumbers = [];
-var index = 0;
-var rank = 1;
-*/
-var playing = {};
-var count = {};
-var numbersList = {};
-var currentNumbers = {};
-var index = {};
-var rank = {};
 
 io.on('connection',(socket) => {
   //console.log('io connection');
 
   socket.on('newUser',(params,callback) => {
     var room = params.room;
-    if(playing[room]) {
+    if(users.playing[room]) {
       callback('This room is not available');
     } else {
       callback();
     }
   });
 
+  socket.on('getAvailableRoom',(callback) => {
+    var rooms = [];
+    for(var key in users.playing) {
+      if(!users.playing[key]) {
+        rooms.push(key);
+      }
+    }
+
+    socket.emit('availableRoom',{rooms:rooms});
+    callback();
+  });
+
   socket.on('join',(params,callback) => {
     var name = params.name;
     var room = params.room;
-    if(playing[room]) {
+    if(users.playing[room]) {
       callback("You cannot join this room")
     } else {
+      users.playing[room] = false;
+
       socket.join(room);
       users.removeUser(socket.id);
       users.addUser(socket.id,name,room);
@@ -63,18 +64,16 @@ io.on('connection',(socket) => {
     callback();
     //console.log(users.getUserList(room));
     if(users.allReady(room)) {
-      count[room] = 0;
-      numbersList[room] = generateQuestionList();
-      index[room] = 0;
-      currentNumbers[room] = numbersList[room][index[room]];
-      rank[room] = 1;
-      playing[room] = true;
-      //numbersList = generateQuestionList();
-      //currentNumbers = numbersList[index];
-      //index++;
-      io.to(room).emit("newQuestion",{nums:currentNumbers[room]});
-      var ind = index[room];
-      index[room] = ind+1;
+      users.count[room] = 0;
+      users.numbersList[room] = generateQuestionList();
+      users.index[room] = 0;
+      users.currentNumbers[room] = users.numbersList[room][users.index[room]];
+      users.rank[room] = 1;
+      users.playing[room] = true;
+
+      io.to(room).emit("newQuestion",{nums:users.currentNumbers[room]});
+      var ind = users.index[room];
+      users.index[room] = ind+1;
     }
   });
 
@@ -83,7 +82,7 @@ io.on('connection',(socket) => {
     var room = params.room;
     var answer = params.answer;
 
-    var judgeResult = judgeValid(answer,currentNumbers[room]);
+    var judgeResult = judgeValid(answer,users.currentNumbers[room]);
     switch(judgeResult) {
       case "invalid operations":
         socket.emit('judgeResult',{
@@ -109,7 +108,7 @@ io.on('connection',(socket) => {
         var result = calculate(answer);
         if(result == 24) {
           var bonus = 0;
-          switch(rank[room]) {
+          switch(users.rank[room]) {
             case 1:
               bonus = 3;
               break;
@@ -120,8 +119,8 @@ io.on('connection',(socket) => {
               bonus = 1;
               break;
           }
-          var val = rank[room];
-          rank[room] = val+1;
+          var val = users.rank[room];
+          users.rank[room] = val+1;
           users.setUser(socket.id,'point',bonus)
           socket.emit('judgeResult',{
             result:"Congratulations! You are right"
@@ -141,28 +140,23 @@ io.on('connection',(socket) => {
     var name = params.name;
     var room = params.room;
 
-    var cnt = count[room];
-    count[room] = cnt+1;
+    var cnt = users.count[room];
+    users.count[room] = cnt+1;
 
     var userNumbers = users.getUserList(room).length
-    if(count[room] >= userNumbers) {
-      count[room] = 0;
-      rank[room] = 1;
-      if(index[room] < 5) {
-        nums = numbersList[room][index[room]];
-        var ind = index[room];
-        index[room] = ind+1;
-        currentNumbers[room] = [nums[0],nums[1],nums[2],nums[3]];
-        io.to(room).emit('newQuestion',{nums:currentNumbers[room]});
+    if(users.count[room] >= userNumbers) {
+      users.count[room] = 0;
+      users.rank[room] = 1;
+      if(users.index[room] < 1) {
+        var nums = users.numbersList[room][users.index[room]];
+        var ind = users.index[room];
+        users.index[room] = ind+1;
+        users.currentNumbers[room] = [nums[0],nums[1],nums[2],nums[3]];
+        io.to(room).emit('newQuestion',{nums:users.currentNumbers[room]});
         //callback();
       } else {
         var rankedUsers = users.sortUsers(room);
-        delete count[room];
-        delete numbersList[room];
-        delete currentNumbers[room];
-        delete index[room];
-        delete rank[room];
-        delete playing[room];
+        users.gameover(room);
         io.to(room).emit('roundFinish',{users: rankedUsers});
       }
     }
@@ -174,12 +168,7 @@ io.on('connection',(socket) => {
       io.to(user[0].room).emit('updateUserList',users.getUserList(user[0].room));
       if(users.getUserList(user[0].room).length == 0) {
         var room = user[0].room;
-        delete count[room];
-        delete numbersList[room];
-        delete currentNumbers[room];
-        delete index[room];
-        delete rank[room];
-        delete playing[room];
+        users.gameover(room);
       }
     }
 

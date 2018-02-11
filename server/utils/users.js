@@ -1,6 +1,13 @@
 class Users {
   constructor() {
     this.userList = [];
+
+    this.playing = {};
+    this.count = {};
+    this.numbersList = {};
+    this.currentNumbers = {};
+    this.index = {};
+    this.rank = {};
   }
 
   addUser(id, name, room) {
@@ -88,6 +95,15 @@ class Users {
     var users = this.getUserList(room);
     users.sort(function(a,b) {return b.points-a.points;});
     return users;
+  }
+
+  gameover(room) {
+    delete this.count[room];
+    delete this.numbersList[room];
+    delete this.currentNumbers[room];
+    delete this.index[room];
+    delete this.rank[room];
+    delete this.playing[room];
   }
 
 }
