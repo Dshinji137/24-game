@@ -147,7 +147,7 @@ io.on('connection',(socket) => {
     if(users.count[room] >= userNumbers) {
       users.count[room] = 0;
       users.rank[room] = 1;
-      if(users.index[room] < 1) {
+      if(users.index[room] < 5) {
         var nums = users.numbersList[room][users.index[room]];
         var ind = users.index[room];
         users.index[room] = ind+1;
