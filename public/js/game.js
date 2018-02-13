@@ -22,7 +22,10 @@ socket.on('connect', function() {
       alert(err);
       document.getElementById('ready-button').disabled = true;
       document.getElementById('send-button').disabled = true;
-      document.getElementById('leave-button').style.display = 'block';
+      document.getElementById('send-button').style.opacity = 0.5;
+    } else {
+      document.getElementById('send-button').disabled = true;
+      document.getElementById('send-button').style.opacity = 0.5;
     }
   })
 });
@@ -54,7 +57,7 @@ socket.on('newQuestion',function(nums) {
   var params = getParams(window.location.search);
   var seconds = 20;
   document.getElementById('send-button').disabled = false;
-  document.getElementById('send-button').style.opcatiy = 1;
+  document.getElementById('send-button').style.opacity = 1;
 
   var timer = setInterval(function() {
     document.getElementById('timer').innerHTML = seconds;
