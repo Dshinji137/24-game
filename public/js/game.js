@@ -115,6 +115,8 @@ ready.onclick = function() {
 
 var leave = document.getElementById('leave-button');
 leave.onclick = function() {
-  var home = "http://localhost:4100";
+  var currentUrl = window.location.href;
+  var basicUrl = currentUrl.split('?')[0];
+  var home = basicUrl.substring(0,basicUrl.length-9);
   window.location.replace(home);
 }

@@ -30,7 +30,9 @@ join.addEventListener("submit",function(e) {
         if(e) {
           alert(e);
         } else {
-          window.location.href = "http://localhost:4100/game.html?"+"name="+name+"&"+"room="+room;
+          //window.location.href = "http://localhost:4100/game.html?"+"name="+name+"&"+"room="+room;
+          var toUrl = window.location.href+"?name="+name+"&room="+room;
+          document.location.href = toUrl;
         }
       });
   } else {
@@ -44,17 +46,16 @@ socket.on('connect',() => {
 
 socket.on('availableRoom',(infos) => {
   var rooms = infos['rooms'];
-  console.log(infos);
+  //console.log(infos);
   var select = document.getElementById("available-room");
   rooms.forEach((room) => {
     select.options[select.options.length] = new Option(room,room);
   });
 
   if(rooms.length > 0) {
-    console.log(1);
+    //console.log(1);
     document.getElementById('join-button').disabled = false;
   } else {
-    console.log(2);
     document.getElementById('join-button').disabled = true;
   }
 });
