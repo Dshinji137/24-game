@@ -10,7 +10,8 @@ create.addEventListener("submit",function(e) {
         if(e) {
           alert(e);
         } else {
-          window.location.href = "http://localhost:4100/game.html?"+"name="+name+"&"+"room="+room;
+          var toUrl = window.location.href+"?name="+name+"&room="+room;
+          document.location.href = toUrl;
         }
       });
   } else {
